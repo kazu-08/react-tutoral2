@@ -1,56 +1,68 @@
-import { useState } from "react";
+import { useState } from 'react';
+
+function randomValueFromArray(array) {
+    const random = Math.floor(Math.random() * array.length);
+    return array[random];
+}
 
 export default function App() {
-  const [previousGuesses, setPreviousGuesses] = useState([]);
+    const [customName, setCustomName] = useState('Bob');
+    const [ukus, setUkus] = useState('us');
+    const [showStory, setShowStory] = useState(false);
+    const [story, setStory] = useState('');
+    const [xItem, setXItems] = useState('');
+    const [yItem, setYItems] = useState('');
+    const [zItem, setZItems] = useState('');
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    const guessField = event.target.elements.guessField;
-    const newUserGuess = Number(guessField.value);
-    setPreviousGuesses([].concat(previousGuesses, [newUserGuess]));
-    guessField.value = "";
-    guessField.focus();
-  }
+    function handleClickGenerateRandomStory(event) {
+        event.preventDefault();
+        const xItems = ['Willy the Goblin', 'Big Daddy', 'Father Christmas'];
+        const yItems = ['the soup kitchen', 'Disneyland', 'the White House'];
+        const zItems = ['spontaneously', 'melted into a puddle on the sidewalk', 'turned into a slug and crawled away'];
 
-  const guessCount = previousGuesses.length;
-  const userGuess = guessCount === 0 ? null : previousGuesses[guessCount - 1];
+        setXItems(randomValueFromArray(xItems));
+        setYItems(randomValueFromArray(yItems));
+        setZItems(randomValueFromArray(zItems));
 
-  return (
-    <>
-      <h1>Number guessing game</h1>
+        setShowStory(true);
+    }
 
-      <p>
-        We have selected a random number between 1 and 100. See if you can guess
-        it in 10 turns or fewer. We'll tell you if your guess was too high or
-        too low.
-      </p>
-
-      <div class="form">
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="guessField">Enter a guess: </label>
-          <input
-            type="number"
-            min="1"
-            max="100"
-            required
-            name="guessField"
-            class="guessField"
-          />
-          <input
-            type="submit"
-            value="Submit guess"
-            class="guessSubmit"
-          />
-        </form>
-      </div>
-
-      {userGuess != null && (
-        <div class="resultParas">
-          <p class="guesses">Previous guesses: {previousGuesses.join(" ")}</p>
-          <p class="lastResult"></p>
-          <p class="lowOrHi"></p>
-        </div>
-      )}
-    </>
-  );
+    return (
+        <>
+            <div>
+                <label htmlFor="customname">Enter custom name:</label>
+                <input
+                    type="text"
+                    placeholder=""
+                    onChange={(e) => setCustomName(e.target.value || 'Bob')}
+                />
+            </div>
+            <div>
+                <label htmlFor="us">US</label>
+                <input
+                    type="radio"
+                    value="us"
+                    checked={ukus === "us"}
+                    onChange={() => setUkus("us")}
+                />
+                <label htmlFor="uk">UK</label>
+                <input
+                    type="radio"
+                    value="uk"
+                    checked={ukus === "uk"}
+                    onChange={() => setUkus("uk")}
+                />
+            </div>
+            <div>
+                <button onClick={handleClickGenerateRandomStory}>Generate random story</button>
+            </div>
+            {showStory && (
+                <p>
+                    It was {ukus === 'us' ? '94 fahrenheit' : '34 celsius'} outside, so {xItem} went for a walk. When they
+                    got to {yItem}, they stared in horror for a few moments, then {zItem}.
+                    {customName} saw the whole thing, but was not surprised — {xItem} weighs {ukus === 'us' ? '300 pounds' : '21 stone'}, and it was a hot day.
+                </p>
+            )}
+        </>
+    );
 }
